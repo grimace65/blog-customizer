@@ -19,17 +19,17 @@ import { ArticleStateType, defaultArticleState } from 'src/constants/articleProp
 import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
 
 type ArticleParamsFormProps = {
-    state: ArticleStateType;
-    setState: (state: ArticleStateType) => void;
+    defaultState: ArticleStateType;
+    setDefaultState: (state: ArticleStateType) => void;
 };
 
-export const ArticleParamsForm = ({ state, setState }: ArticleParamsFormProps) => {
+export const ArticleParamsForm = ({ defaultState, setDefaultState }: ArticleParamsFormProps) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [currentState, setCurrentState] = useState(state);
+	const [currentState, setCurrentState] = useState(defaultState);
 	const formRef = useRef<HTMLFormElement>(null);
 
 	const handleApply = () => {
-		setState(currentState);
+		setDefaultState(currentState);
 		setIsMenuOpen(false);
 	}
 
@@ -39,8 +39,8 @@ export const ArticleParamsForm = ({ state, setState }: ArticleParamsFormProps) =
 	};
 
 	const handleReset = () => {
-		setCurrentState(state);
-		setState(defaultArticleState);
+		setCurrentState(defaultState);
+		setDefaultState(defaultArticleState);
 		setIsMenuOpen(false);
 	}
 
