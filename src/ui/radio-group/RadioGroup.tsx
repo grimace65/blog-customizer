@@ -7,7 +7,7 @@ import styles from './RadioGroup.module.scss';
 type RadioGroupProps = {
 	name: string;
 	options: OptionType[];
-	selected: OptionType;
+	selected: OptionType | null;
 	onChange?: (value: OptionType) => void;
 	title: string;
 };
