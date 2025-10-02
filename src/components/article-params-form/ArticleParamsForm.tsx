@@ -2,7 +2,7 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 
 import styles from './ArticleParamsForm.module.scss';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import clsx from 'clsx';
 
 import { Select } from 'src/ui/select';
@@ -16,18 +16,21 @@ import { Text } from 'src/ui/text';
 
 import { ArticleStateType, defaultArticleState } from 'src/constants/articleProps';
 
+import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
+
 type ArticleParamsFormProps = {
     state: ArticleStateType;
     setState: (state: ArticleStateType) => void;
 };
 
 export const ArticleParamsForm = ({ state, setState }: ArticleParamsFormProps) => {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [currentState, setCurrentState] = useState(state);
+	const formRef = useRef<HTMLFormElement>(null);
 
 	const handleApply = () => {
 		setState(currentState);
-		setIsOpen(false);
+		setIsMenuOpen(false);
 	}
 
 	const handleFormSubmit = (e: React.FormEvent) => {
@@ -38,12 +41,14 @@ export const ArticleParamsForm = ({ state, setState }: ArticleParamsFormProps) =
 	const handleReset = () => {
 		setCurrentState(state);
 		setState(defaultArticleState);
-		setIsOpen(false);
+		setIsMenuOpen(false);
 	}
 
 	const openToggle = () => {
-		setIsOpen(!isOpen);
+		setIsMenuOpen(!isMenuOpen);
 	};
+
+	useOutsideClickClose({ isOpen: isMenuOpen, rootRef: formRef, onClose: () => setIsMenuOpen(false) })
 
 	const fontOptions: OptionType[] = fontFamilyOptions;
 	const handleFontChange = (selectedOption: OptionType) => {
@@ -87,12 +92,12 @@ export const ArticleParamsForm = ({ state, setState }: ArticleParamsFormProps) =
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={openToggle} />
+			<ArrowButton isOpen={isMenuOpen} onClick={openToggle} />
 			<aside className={clsx(
                 styles.container, 
-                { [styles.container_open]: isOpen }
+                { [styles.container_open]: isMenuOpen }
             )}>
-				<form className={styles.form} onSubmit={handleFormSubmit}>
+				<form ref={formRef} className={styles.form} onSubmit={handleFormSubmit}>
 					<Text as="div" size={31} weight={800} uppercase family="open-sans" children="задайте параметры"></Text>
 					<Select title='шрифт' selected={currentState.fontFamilyOption} options={fontOptions} onChange={handleFontChange}></Select>
 					<RadioGroup title='размер шрифта' name='размер шрифта' selected={currentState.fontSizeOption} options={sizeOptions} onChange={handleSizeChange}></RadioGroup>
